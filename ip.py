@@ -16,6 +16,8 @@ def local_ip():
 
 
 def is_valid_ip(ip_str):
+    if not ip_str:
+        return False
     reg = r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
     if re.match(reg, ip_str):
         return True
@@ -39,36 +41,34 @@ def main(wf):
     parser = argparse.ArgumentParser()
     parser.add_argument('--ip', dest='ip', nargs='?', default=None)
     args = parser.parse_args(wf.args)
-
     ip_intranet = local_ip()
-    ip_public_info = external_ip(args.ip)
 
-    if not args.ip:
-        location = '{}, {} ({}) '.format(ip_public_info['city'], ip_public_info['country'],
-                                         ip_public_info['countryCode'])
-        coordinates = '({}, {})'.format(ip_public_info['lat'], ip_public_info['lon'])
-        wf.add_item(title='Local IP: '+ip_intranet,
-                    subtitle='press Enter to copy',
-                    arg=ip_intranet)
-        wf.add_item(title=ip_public_info['org'] + ': ' + ip_public_info['query'],
-                    subtitle=location + coordinates,
-                    arg=ip_public_info['query'],
-                    valid=True,
-                    icon=None)
-    elif is_valid_ip(args.ip):
-        location = '{}, {} ({}) '.format(ip_public_info['city'], ip_public_info['country'],
-                                         ip_public_info['countryCode'])
-        coordinates = '({}, {})'.format(ip_public_info['lat'], ip_public_info['lon'])
-        wf.add_item(title=ip_public_info['org'] + ': ' + ip_public_info['query'],
-                    subtitle=location + coordinates,
-                    arg=ip_public_info['query'],
-                    valid=True,
-                    icon=None)
-    else:
+    if not is_valid_ip(args.ip) and args.ip:
         wf.add_item(title='invalid ip address',
                     valid=True,
                     icon=None)
+        wf.send_feedback()
+        return
+
+    ip_public_info = external_ip(args.ip)
+    location = '{}, {} ({}) '.format(ip_public_info['city'], ip_public_info['country'],
+                                     ip_public_info['countryCode'])
+    coordinates = '({}, {})'.format(ip_public_info['lat'],
+                                    ip_public_info['lon'])
+
+    if not args.ip:
+        wf.add_item(title='Local IP: '+ip_intranet,
+                    subtitle='press Enter to copy',
+                    arg=ip_intranet)
+
+    wf.add_item(title=ip_public_info['org'] + ': ' + ip_public_info['query'],
+                subtitle=location + coordinates,
+                arg=ip_public_info['query'],
+                valid=True,
+                icon=None)
     wf.send_feedback()
+    return
+
 
 
 if __name__ == u"__main__":
