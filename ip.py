@@ -1,5 +1,6 @@
 # encoding: utf-8
 import os
+import re
 import sys
 import argparse
 from workflow import Workflow, web
@@ -12,6 +13,14 @@ def local_ip():
     """
     ipv4 = os.popen(' ifconfig | grep -A 1 "en" | grep broadcast | cut -d " " -f 2 | tr "\\n" " "').read()
     return ipv4
+
+
+def is_valid_ip(ip_str):
+    reg = r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+    if re.match(reg, ip_str):
+        return True
+    else:
+        return False
 
 
 def external_ip(ip=None):
@@ -34,18 +43,31 @@ def main(wf):
     ip_intranet = local_ip()
     ip_public_info = external_ip(args.ip)
 
-    location = '{}, {} ({}) '.format(ip_public_info['city'], ip_public_info['country'], ip_public_info['countryCode'])
-    coordinates = '({}, {})'.format(ip_public_info['lat'], ip_public_info['lon'])
-
     if not args.ip:
+        location = '{}, {} ({}) '.format(ip_public_info['city'], ip_public_info['country'],
+                                         ip_public_info['countryCode'])
+        coordinates = '({}, {})'.format(ip_public_info['lat'], ip_public_info['lon'])
         wf.add_item(title='Local IP: '+ip_intranet,
                     subtitle='press Enter to copy',
                     arg=ip_intranet)
-    wf.add_item(title=ip_public_info['org'] + ': ' + ip_public_info['query'],
-                subtitle=location + coordinates,
-                arg=ip_public_info['query'],
-                valid=True,
-                icon=None)
+        wf.add_item(title=ip_public_info['org'] + ': ' + ip_public_info['query'],
+                    subtitle=location + coordinates,
+                    arg=ip_public_info['query'],
+                    valid=True,
+                    icon=None)
+    elif is_valid_ip(args.ip):
+        location = '{}, {} ({}) '.format(ip_public_info['city'], ip_public_info['country'],
+                                         ip_public_info['countryCode'])
+        coordinates = '({}, {})'.format(ip_public_info['lat'], ip_public_info['lon'])
+        wf.add_item(title=ip_public_info['org'] + ': ' + ip_public_info['query'],
+                    subtitle=location + coordinates,
+                    arg=ip_public_info['query'],
+                    valid=True,
+                    icon=None)
+    else:
+        wf.add_item(title='invalid ip address',
+                    valid=True,
+                    icon=None)
     wf.send_feedback()
 
 

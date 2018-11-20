@@ -35,25 +35,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>142C3ACA-0A1B-45C4-845B-723B80920B35</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>autopaste</key>
 				<false/>
 				<key>clipboardtext</key>
@@ -120,13 +101,6 @@
 	<string></string>
 	<key>uidata</key>
 	<dict>
-		<key>142C3ACA-0A1B-45C4-845B-723B80920B35</key>
-		<dict>
-			<key>xpos</key>
-			<integer>530</integer>
-			<key>ypos</key>
-			<integer>70</integer>
-		</dict>
 		<key>85E60551-4741-4201-82E6-576C443B5311</key>
 		<dict>
 			<key>xpos</key>
@@ -137,7 +111,7 @@
 		<key>9ABC3A1D-5C9A-43C2-A4CA-F6AEBF283782</key>
 		<dict>
 			<key>xpos</key>
-			<integer>520</integer>
+			<integer>470</integer>
 			<key>ypos</key>
 			<integer>200</integer>
 		</dict>
